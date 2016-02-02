@@ -10,6 +10,14 @@ describe('server-side', function () {
     });
   });
 
+  it('can pass arguments', function () {
+    return server.run(function (a, b) {
+      return a + b;
+    }, 1, 2).then(function (result) {;
+      expect(result).to.equal(3);
+    });
+  });
+
   it('returns result from promise', function () {
     return server.run(function () {
       return new Promise(function (fulfil) {
