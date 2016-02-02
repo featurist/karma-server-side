@@ -55,7 +55,7 @@ function createMiddleware() {
 
           function sendError(error) {
             res.statusCode = 500;
-            res.end(JSON.stringify({error: error}));
+            res.end(JSON.stringify({error: serialiseError(error)}));
           }
 
           if (result && typeof result.then === 'function') {
@@ -64,8 +64,7 @@ function createMiddleware() {
             sendResult(result);
           }
         } catch (error) {
-          console.error(serialiseError(error));
-          sendError(serialiseError(error));
+          sendError(error);
         }
       });
     } else {

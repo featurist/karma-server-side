@@ -4,9 +4,25 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "karma start --single-run"
   },
   "author": "Tim Macfarlane <timmacfarlane@gmail.com>",
   "license": "ISC",
-  "browser": "browser.js"
+  "browser": "browser.js",
+  "devDependencies": {
+    "browserify": "13.0.0",
+    "chai": "3.5.0",
+    "fs-promise": "0.4.1",
+    "karma": "0.13.19",
+    "karma-browserify": "5.0.1",
+    "karma-chrome-launcher": "0.2.2",
+    "karma-mocha": "0.2.1",
+    "karma-mocha-reporter": "1.1.5",
+    "mocha": "2.4.5",
+    "watchify": "3.7.0"
+  },
+  "dependencies": {
+    "httpism": "1.8.1",
+    "parse-function": "2.3.0"
+  }
 }
