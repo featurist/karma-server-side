@@ -53,12 +53,14 @@ You can require modules on the server side by using `serverRequire` or `require`
 
 If you return a promise from the function passed to `run()` then `run()` will wait for it to complete.
 
+```js
 server.run(function () {
   var fs = serverRequire('fs-promise');
   return fs.readFile('afile.txt', 'utf-8');
 }).then(function (fileContents) {
   // fileContents is the contents of afile.txt
 });
+```
 
 ## run context
 
