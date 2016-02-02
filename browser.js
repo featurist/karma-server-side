@@ -1,7 +1,5 @@
-var http = require('httpism');
 var parseFunction = require('parse-function');
-
-exports.urlRoot = '/';
+var server = require('./reqres')('server-side');
 
 function namedArguments(names, values) {
   var args = {};
@@ -14,19 +12,18 @@ function namedArguments(names, values) {
 }
 
 exports.run = function (_fn) {
-  var fn = parseFunction(_fn);
-  var runArguments = Array.prototype.slice.call(arguments, 1);
-  var url = exports.urlRoot + 'server-side';
+  var fn = parseFunction(arguments[arguments.length - 1]);
+  var runArguments = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
 
   var args = namedArguments(fn.args, runArguments);
 
-  return http.post(url, {script: fn.body, arguments: args}).then(function (response) {
-    return response.body.result;
-  }, function (response) {
-    if (response.statusCode == 500) {
-      var error = new Error(response.body.error.message);
-      Object.assign(error, response.body.error);
+  return server.send({script: fn.body, arguments: args}).then(function (response) {
+    if (response.error) {
+      var error = new Error(response.error.message);
+      Object.assign(error, response.error);
       throw error;
+    } else {
+      return response.result;
     }
   });
 };

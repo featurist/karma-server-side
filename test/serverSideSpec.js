@@ -11,10 +11,27 @@ describe('server-side', function () {
   });
 
   it('can pass arguments', function () {
-    return server.run(function (a, b) {
+    return server.run(1, 2, function (a, b) {
       return a + b;
-    }, 1, 2).then(function (result) {;
+    }).then(function (result) {;
       expect(result).to.equal(3);
+    });
+  });
+
+  it('can call several at a time with results coordinated', function () {
+    function run(n) {
+      return server.run(n, function (a) {
+        return a;
+      });
+    }
+
+    return Promise.all([
+      run(1),
+      run(2),
+      run(3),
+      run(4)
+    ]).then(function (results) {
+      expect(results).to.eql([1, 2, 3, 4]);
     });
   });
 

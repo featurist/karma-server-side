@@ -22,7 +22,7 @@
     "watchify": "3.7.0"
   },
   "dependencies": {
-    "httpism": "1.8.1",
-    "parse-function": "2.3.0"
+    "parse-function": "2.3.0",
+    "socket.io-client": "1.4.5"
   }
 }

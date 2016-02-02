@@ -1,10 +1,7 @@
 var originalRequireCache = {};
 var context = {};
-var config;
 
-function createFramework(emitter, _config) {
-  config = _config;
-
+function createFramework(emitter, io) {
   emitter.on('run_start', function () {
     originalRequireCache = Object.assign({}, require.cache);
   });
@@ -14,6 +11,22 @@ function createFramework(emitter, _config) {
       if (!originalRequireCache[module]) {
         delete require.cache[module];
       }
+    });
+  });
+
+  io.on('connection', function (socket) {
+    socket.on('server-side', function (request) {
+      run(request, function (error, result) {
+        var response = {id: request.id};
+
+        if (error) {
+          response.error = serialiseError(error);
+        } else {
+          response.result = result;
+        }
+
+        socket.emit('server-side', response);
+      });
     });
   });
 }
@@ -40,46 +53,33 @@ function serverRequire(moduleName) {
   return require(modulePath);
 }
 
-function createMiddleware() {
+function run(request, cb) {
+  var argumentNames = Object.keys(request.arguments);
+  var argumentValues = argumentNames.map(function (name) {
+    return request.arguments[name];
+  });
 
-  return function(req, res, next) {
-    var url = config.urlRoot + 'server-side';
-    if (req.url == url && req.method == 'POST') {
-      streamToJson(req, function (error, body) {
-        res.setHeader('Content-Type', 'application/json');
+  var fn = new Function(['serverRequire', 'require'].concat(argumentNames).join(', '), request.script);
 
-        var argumentNames = Object.keys(body.arguments);
-        var argumentValues = argumentNames.map(function (name) {
-          return body.arguments[name];
-        });
+  try {
+    var result = fn.apply(context, [serverRequire, serverRequire].concat(argumentValues));
 
-        var fn = new Function(['serverRequire', 'require'].concat(argumentNames).join(', '), body.script);
-
-        try {
-          var result = fn.apply(context, [serverRequire, serverRequire].concat(argumentValues));
-
-          function sendResult(result) {
-            res.end(JSON.stringify({result: result}));
-          }
-
-          function sendError(error) {
-            res.statusCode = 500;
-            res.end(JSON.stringify({error: serialiseError(error)}));
-          }
-
-          if (result && typeof result.then === 'function') {
-            result.then(sendResult, sendError);
-          } else {
-            sendResult(result);
-          }
-        } catch (error) {
-          sendError(error);
-        }
-      });
-    } else {
-      next();
+    function sendResult(result) {
+      cb(undefined, result);
     }
-  };
+
+    function sendError(error) {
+      cb(error);
+    }
+
+    if (result && typeof result.then === 'function') {
+      result.then(sendResult, sendError);
+    } else {
+      sendResult(result);
+    }
+  } catch (error) {
+    sendError(error);
+  }
 }
 
 function serialiseError(error) {
@@ -90,9 +90,8 @@ function serialiseError(error) {
   return s;
 }
 
-createFramework.$inject = ['emitter', 'config'];
+createFramework.$inject = ['emitter', 'socketServer'];
 
 module.exports = {
-  'framework:server-side': [ 'factory', createFramework ],
-  'middleware:server-side': [ 'factory', createMiddleware ]
+  'framework:server-side': [ 'factory', createFramework ]
 };

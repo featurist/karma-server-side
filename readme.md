@@ -62,6 +62,18 @@ server.run(function () {
 });
 ```
 
+## passing arguments
+
+You can pass arguments to the function:
+
+```js
+server.run(1, 2, function (a, b) {
+  return a + b;
+}).then(function (result) {
+  // result == 3
+});
+```
+
 ## run context
 
 The `this` inside the function can be used to store values between calls to `run()`:
