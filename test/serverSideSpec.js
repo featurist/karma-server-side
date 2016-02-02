@@ -58,4 +58,16 @@ describe('server-side', function () {
       expect(result).to.equal('this is a file\n');
     });
   });
+
+  it('can keep context from one run to the next', function () {
+    return server.run(function () {
+      this.x = 'something';
+    }).then(function (result) {
+      return server.run(function () {
+        return this.x;
+      }).then(function (result) {
+        expect(result).to.equal('something');
+      });
+    });
+  });
 });
