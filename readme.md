@@ -8,7 +8,7 @@ Ever wanted to interact with the host system when running karma tests? This modu
 npm install karma-server-side
 ```
 
-Edit your `karma.conf.js` to look like this, add `server-side` to both the `frameworks` and `middleware` arrays:
+Edit your `karma.conf.js` to look like this, add `server-side` to the `frameworks` array:
 
 ```js
 module.exports = function(config) {
@@ -17,8 +17,6 @@ module.exports = function(config) {
     ...
 
     frameworks: [..., 'server-side'],
-
-    middleware: [..., 'server-side'],
 
     ...
 
