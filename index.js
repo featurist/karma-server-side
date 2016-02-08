@@ -1,5 +1,11 @@
+var debug = require('debug')('karma-server-side');
 var originalRequireCache = {};
 var context = {};
+var cwd = process.cwd();
+
+function isLocalModule(filename) {
+  return filename.indexOf(cwd) != -1 && filename.indexOf('/node_modules/') == -1;
+}
 
 function createFramework(emitter, io) {
   emitter.on('run_start', function () {
@@ -8,7 +14,8 @@ function createFramework(emitter, io) {
 
   emitter.on('run_complete', function () {
     Object.keys(require.cache).forEach(function (module) {
-      if (!originalRequireCache[module]) {
+      if (!originalRequireCache[module] && isLocalModule(module)) {
+        debug('unloading', module);
         delete require.cache[module];
       }
     });
@@ -16,12 +23,15 @@ function createFramework(emitter, io) {
 
   io.on('connection', function (socket) {
     socket.on('server-side', function (request) {
+      debug('run', request);
       run(request, function (error, result) {
         var response = {id: request.id};
 
         if (error) {
+          debug('error', error);
           response.error = serialiseError(error);
         } else {
+          debug('result', result);
           response.result = result;
         }
 
@@ -31,25 +41,9 @@ function createFramework(emitter, io) {
   });
 }
 
-function streamToJson(s, cb) {
-  s.setEncoding("utf-8");
-  var strings = [];
-
-  s.on("data", function(d) {
-    strings.push(d);
-  });
-
-  s.on("end", function() {
-    cb(undefined, JSON.parse(strings.join("")));
-  });
-
-  s.on("error", function(e) {
-    cb(e);
-  });
-};
-
 function serverRequire(moduleName) {
-  var modulePath = moduleName[0] == '.' ?  process.cwd() + '/' + moduleName: moduleName;
+  var modulePath = moduleName[0] == '.' ? cwd + '/' + moduleName: moduleName;
+  debug('loading', modulePath);
   return require(modulePath);
 }
 
@@ -61,16 +55,16 @@ function run(request, cb) {
 
   var fn = new Function(['serverRequire', 'require'].concat(argumentNames).join(', '), request.script);
 
+  function sendResult(result) {
+    cb(undefined, result);
+  }
+
+  function sendError(error) {
+    cb(error);
+  }
+
   try {
     var result = fn.apply(context, [serverRequire, serverRequire].concat(argumentValues));
-
-    function sendResult(result) {
-      cb(undefined, result);
-    }
-
-    function sendError(error) {
-      cb(error);
-    }
 
     if (result && typeof result.then === 'function') {
       result.then(sendResult, sendError);
