@@ -87,3 +87,11 @@ server.run(function () {
   });
 });
 ```
+
+# Debug
+
+`karma-server-side` uses [debug](https://github.com/visionmedia/debug) so you can see debug information by running karma with a `DEBUG=karma-server-side` variable:
+
+```sh
+DEBUG=karma-server-side karma start
+```
