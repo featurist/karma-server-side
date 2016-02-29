@@ -2,6 +2,8 @@
 
 Ever wanted to interact with the host system when running karma tests? This module allows the tests running in your browser to do things on the server-side, that is, in node. This means you can run API or DB setup code from your tests inside karma.
 
+Also, when you change your server-side files, they'll be reloaded on the next test run. No need to reload karma!
+
 ## install
 
 ```sh
