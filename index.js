@@ -1,5 +1,5 @@
 var debug = require('debug')('karma-server-side');
-var originalRequireCache = {};
+var originalRequireCache;
 var context = {};
 var cwd = process.cwd();
 
@@ -9,7 +9,12 @@ function isLocalModule(filename) {
 
 function createFramework(emitter, io) {
   emitter.on('run_start', function () {
-    originalRequireCache = Object.assign({}, require.cache);
+    // Store originalRequireCache once when Karma starts.
+    // To prevent the situation where second 'run_start' (e.g. user clicked karma Debug button)
+    // marks application modules as "cached" and never unloads them again.
+    if (!originalRequireCache) {
+      originalRequireCache = Object.assign({}, require.cache);
+    }
   });
 
   emitter.on('run_complete', function () {
