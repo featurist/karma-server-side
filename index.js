@@ -4,7 +4,7 @@ var context = {};
 var cwd = process.cwd();
 
 function isLocalModule(filename) {
-  return filename.indexOf(cwd) != -1 && filename.indexOf('/node_modules/') == -1;
+  return filename.indexOf(cwd) != -1 && !filename.match(/[/\\]node_modules[/\\]/);
 }
 
 function createFramework(emitter, io) {
