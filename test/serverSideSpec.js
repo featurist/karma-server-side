@@ -1,11 +1,12 @@
 var expect = require('chai').expect;
 var server = require('../');
+var fauxJax = require('faux-jax');
 
 describe('server-side', function () {
   it('returns result', function () {
     return server.run(function () {
       return 1;
-    }).then(function (result) {;
+    }).then(function (result) {
       expect(result).to.equal(1);
     });
   });
@@ -13,7 +14,7 @@ describe('server-side', function () {
   it('can pass arguments', function () {
     return server.run(1, 2, function (a, b) {
       return a + b;
-    }).then(function (result) {;
+    }).then(function (result) {
       expect(result).to.equal(3);
     });
   });
@@ -40,7 +41,7 @@ describe('server-side', function () {
       return new Promise(function (fulfil) {
         fulfil(1);
       });
-    }).then(function (result) {;
+    }).then(function (result) {
       expect(result).to.equal(1);
     });
   });
@@ -48,9 +49,9 @@ describe('server-side', function () {
   it('throws exception', function () {
     return server.run(function () {
       throw new Error('argh!');
-    }).then(function (error) {
+    }).then(function () {
       throw new Error("expected exception to be thrown");
-    }, function (error) {;
+    }, function (error) {
       expect(error.message).to.equal('argh!');
     });
   });
@@ -60,9 +61,9 @@ describe('server-side', function () {
       return new Promise(function (fulfil, reject) {
         reject(new Error('argh!'));
       });
-    }).then(function (error) {
+    }).then(function () {
       throw new Error("expected exception to be thrown");
-    }, function (error) {;
+    }, function (error) {
       expect(error.message).to.equal('argh!');
     });
   });
@@ -87,11 +88,38 @@ describe('server-side', function () {
   it('can keep context from one run to the next', function () {
     return server.run(function () {
       this.x = 'something';
-    }).then(function (result) {
+    }).then(function () {
       return server.run(function () {
         return this.x;
       }).then(function (result) {
         expect(result).to.equal('something');
+      });
+    });
+  });
+
+  context('when XHR has been mocked out', function () {
+    var capturedRequest;
+
+    beforeEach(function () {
+      capturedRequest = false;
+
+      fauxJax.install();
+      fauxJax.on('request', function () {
+        capturedRequest = true;
+      });
+    });
+
+    afterEach(function () {
+      fauxJax.restore();
+    });
+
+    it('returns result', function () {
+      return server.run(function () {
+        return 1;
+      }).then(function (result) {
+        expect(result).to.equal(1);
+      }).then(function () {
+        expect(capturedRequest).to.equal(false);
       });
     });
   });

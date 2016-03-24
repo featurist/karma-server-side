@@ -12,6 +12,7 @@
   "devDependencies": {
     "browserify": "13.0.0",
     "chai": "3.5.0",
+    "faux-jax": "5.0.1",
     "fs-promise": "0.4.1",
     "karma": "0.13.19",
     "karma-browserify": "5.0.1",
@@ -22,6 +23,7 @@
     "watchify": "3.7.0"
   },
   "dependencies": {
+    "lowscore": "1.8.0",
     "parse-function": "2.3.0",
     "socket.io-client": "1.4.5"
   }
