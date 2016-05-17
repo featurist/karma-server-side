@@ -97,3 +97,15 @@ server.run(function () {
 ```sh
 DEBUG=karma-server-side karma start
 ```
+
+## Concurrency
+
+Running more than one browser concurrently can be problemmatic for tests that run server-side code. Be sure to limit concurrency in your karma configuration if this applies to your tests:
+
+```js
+// karma.conf.js
+{
+  ...
+  concurrency: 1
+}
+```
