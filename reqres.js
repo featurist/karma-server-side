@@ -9,13 +9,13 @@ function messageId() {
   return Date.now() + ':' + messageIndex++;
 }
 
-var socket = io(location.host, {
+var socket = io('/karma-server-side', {
   reconnectionDelay: 500,
   reconnectionDelayMax: Infinity,
   timeout: 2000,
   path: findUrlRoot() + '/socket.io',
   'sync disconnect on unload': true,
-  transports: ['websocket', 'polling']
+  transports: ['polling', 'websocket']
 });
 
 socket.on('server-side', function (msg) {

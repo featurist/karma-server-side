@@ -26,7 +26,9 @@ function createFramework(emitter, io) {
     });
   });
 
-  io.on('connection', function (socket) {
+  var serverSideIo = io.of('/karma-server-side');
+
+  serverSideIo.on('connection', function (socket) {
     socket.on('server-side', function (request) {
       debug('run', request);
       run(request, function (error, result) {
