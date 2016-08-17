@@ -16,9 +16,12 @@
     "fs-promise": "0.4.1",
     "karma": "0.13.19",
     "karma-browserify": "5.0.1",
+    "karma-browserstack-launcher": "1.0.1",
     "karma-chrome-launcher": "0.2.2",
+    "karma-ievms": "0.1.0",
     "karma-mocha": "0.2.1",
     "karma-mocha-reporter": "1.1.5",
+    "lie": "3.1.0",
     "mocha": "2.4.5",
     "watchify": "3.7.0"
   },

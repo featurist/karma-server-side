@@ -3,7 +3,7 @@ module.exports = function() {
 
   var roots = {};
 
-  var origin = location.origin;
+  var origin = location.origin || location.protocol + '//' + location.host;
 
   Array.prototype.slice.call(scripts).map(function (scriptTag) {
     return scriptTag.src.replace(origin, '');
