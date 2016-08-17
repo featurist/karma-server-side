@@ -14,7 +14,8 @@ var socket = io(location.host, {
   reconnectionDelayMax: Infinity,
   timeout: 2000,
   path: findUrlRoot() + '/socket.io',
-  'sync disconnect on unload': true
+  'sync disconnect on unload': true,
+  transports: [window.WebSocket? 'websocket': 'polling']
 });
 
 socket.on('server-side', function (msg) {
