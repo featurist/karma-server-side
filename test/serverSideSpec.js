@@ -1,7 +1,5 @@
 var expect = require('chai').expect;
 var server = require('../');
-var fauxJax = require('faux-jax');
-var router = require('mock-xhr-router');
 require('lie/polyfill');
 
 describe('server-side', function () {
