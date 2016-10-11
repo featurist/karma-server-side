@@ -1,7 +1,7 @@
 {
   "name": "karma-server-side",
   "version": "1.5.0",
-  "description": "",
+  "description": "Ever wanted to interact with the host system when running karma tests? This module allows the tests running in your browser to do things on the server-side, that is, in node. This means you can run API or DB setup code from your tests inside karma.",
   "main": "index.js",
   "scripts": {
     "test": "karma start --single-run"
@@ -29,5 +29,13 @@
     "lowscore": "1.8.0",
     "parse-function": "2.3.0",
     "socket.io-client": "1.4.5"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/featurist/karma-server-side.git"
+  },
+  "bugs": {
+    "url": "https://github.com/featurist/karma-server-side/issues"
+  },
+  "homepage": "https://github.com/featurist/karma-server-side#readme"
 }
