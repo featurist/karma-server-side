@@ -31,7 +31,7 @@ module.exports = function(config) {
 In your tests (in the browser):
 
 ```js
-var server = require('karma-server-side');
+var server = require('karma-server-side/browser');
 
 server.run(function () {
   console.log('this is run on the server');
@@ -109,3 +109,7 @@ Running more than one browser concurrently can be problemmatic for tests that ru
   concurrency: 1
 }
 ```
+
+## Non-karma environment
+
+Tests that use karma-server-side can also be run without karma (e.g. [electron-mocha](https://github.com/jprichardson/electron-mocha)). In this case `run` block falls back to running the code in process.

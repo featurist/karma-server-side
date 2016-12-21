@@ -2,6 +2,7 @@ var debug = require('debug')('karma-server-side');
 var originalRequireCache;
 var context = {};
 var cwd = process.cwd();
+var serverRequire = require('./serverRequire');
 
 function isLocalModule(filename) {
   return filename.indexOf(cwd) != -1 && !filename.match(/[/\\]node_modules[/\\]/);
@@ -44,12 +45,6 @@ function createFramework(emitter, io) {
       });
     });
   });
-}
-
-function serverRequire(moduleName) {
-  var modulePath = moduleName[0] == '.' ? cwd + '/' + moduleName: moduleName;
-  debug('loading', modulePath);
-  return require(modulePath);
 }
 
 function run(request, cb) {

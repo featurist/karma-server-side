@@ -4,7 +4,7 @@
   "description": "Ever wanted to interact with the host system when running karma tests? This module allows the tests running in your browser to do things on the server-side, that is, in node. This means you can run API or DB setup code from your tests inside karma.",
   "main": "index.js",
   "scripts": {
-    "test": "karma start --single-run"
+    "test": "karma start --single-run && mocha"
   },
   "author": "Tim Macfarlane <timmacfarlane@gmail.com>",
   "license": "ISC",
@@ -22,7 +22,7 @@
     "karma-mocha": "0.2.1",
     "karma-mocha-reporter": "1.1.5",
     "lie": "3.1.0",
-    "mocha": "2.4.5",
+    "mocha": "^2.4.5",
     "watchify": "3.7.0"
   },
   "dependencies": {
