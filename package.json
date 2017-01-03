@@ -1,6 +1,6 @@
 {
   "name": "karma-server-side",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Ever wanted to interact with the host system when running karma tests? This module allows the tests running in your browser to do things on the server-side, that is, in node. This means you can run API or DB setup code from your tests inside karma.",
   "main": "index.js",
   "scripts": {
