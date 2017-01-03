@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var server = require('../browser');
+var server = require('../');
 require('lie/polyfill');
 
 describe('server-side', function () {

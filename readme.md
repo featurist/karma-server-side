@@ -31,7 +31,7 @@ module.exports = function(config) {
 In your tests (in the browser):
 
 ```js
-var server = require('karma-server-side/browser');
+var server = require('karma-server-side');
 
 server.run(function () {
   console.log('this is run on the server');

@@ -3,6 +3,7 @@ var originalRequireCache;
 var context = {};
 var cwd = process.cwd();
 var serverRequire = require('./serverRequire');
+var parseFunction = require('parse-function');
 
 function isLocalModule(filename) {
   return filename.indexOf(cwd) != -1 && !filename.match(/[/\\]node_modules[/\\]/);
@@ -30,7 +31,7 @@ function createFramework(emitter, io) {
   io.on('connection', function (socket) {
     socket.on('server-side', function (request) {
       debug('run', request);
-      run(request, function (error, result) {
+      serverSideRun(request, function (error, result) {
         var response = {id: request.id};
 
         if (error) {
@@ -47,7 +48,7 @@ function createFramework(emitter, io) {
   });
 }
 
-function run(request, cb) {
+function serverSideRun(request, cb) {
   var argumentNames = Object.keys(request.arguments);
   var argumentValues = argumentNames.map(function (name) {
     return request.arguments[name];
@@ -86,6 +87,25 @@ function serialiseError(error) {
 
 createFramework.$inject = ['emitter', 'socketServer'];
 
+function run() {
+  var runArguments = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
+  var fnArg = arguments[arguments.length - 1];
+
+  var fn = parseFunction(fnArg);
+
+  return new Promise(function(resolve, reject) {
+    var runFn = new Function(['serverRequire'].concat(fn.args).join(', '), fn.body);
+    var result = runFn.apply(context, [serverRequire].concat(runArguments));
+
+    if (result && typeof result.then == 'function') {
+      return result.then(resolve).catch(reject);
+    } else {
+      return resolve(result);
+    }
+  })
+}
+
 module.exports = {
-  'framework:server-side': [ 'factory', createFramework ]
+  'framework:server-side': [ 'factory', createFramework ],
+  run: run
 };
