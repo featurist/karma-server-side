@@ -1,6 +1,6 @@
 var parseFunction = require('parse-function');
-var server = require('./reqres');
 var extend = require('lowscore/extend');
+var server = require('./reqres');
 
 function namedArguments(names, values) {
   var args = {};
@@ -13,9 +13,10 @@ function namedArguments(names, values) {
 }
 
 exports.run = function () {
-  var fn = parseFunction(arguments[arguments.length - 1]);
   var runArguments = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
+  var fnArg = arguments[arguments.length - 1];
 
+  var fn = parseFunction(fnArg);
   var args = namedArguments(fn.args, runArguments);
 
   return server.send({script: fn.body, arguments: args}).then(function (response) {

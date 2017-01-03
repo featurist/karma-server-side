@@ -109,3 +109,7 @@ Running more than one browser concurrently can be problemmatic for tests that ru
   concurrency: 1
 }
 ```
+
+## Non-karma environment
+
+Tests that use karma-server-side can also be run without karma (e.g. [electron-mocha](https://github.com/jprichardson/electron-mocha)). In this case `run` block falls back to running the code in process.
