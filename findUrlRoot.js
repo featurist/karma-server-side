@@ -29,5 +29,5 @@ module.exports = function() {
     }
   });
 
-  return mostCommonRootName;
+  return mostCommonRootName || '';
 };
