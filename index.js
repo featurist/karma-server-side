@@ -5,6 +5,9 @@ var cwd = process.cwd();
 var serverRequire = require('./serverRequire');
 var parseFunction = require('parse-function');
 
+// parse-function is now ES6, it may export "default"
+parseFunction = (parseFunction.default || parseFunction)().parse;
+
 function isLocalModule(filename) {
   return filename.indexOf(cwd) != -1 && !filename.match(/[/\\]node_modules[/\\]/);
 }

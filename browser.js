@@ -2,6 +2,9 @@ var parseFunction = require('parse-function');
 var extend = require('lowscore/extend');
 var server = require('./reqres');
 
+// parse-function is now ES6, it may export "default"
+parseFunction = (parseFunction.default || parseFunction)().parse;
+
 function namedArguments(names, values) {
   var args = {};
 
